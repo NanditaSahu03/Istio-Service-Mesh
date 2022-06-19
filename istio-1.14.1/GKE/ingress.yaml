@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.allow-http: "false"
+    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.global-static-ip-name: istio-lb
+    networking.gke.io/managed-certificates: gke-ingress-cert
+  name: gke-ingress
+  namespace: istio-system
+spec:
+  defaultBackend:
+    service:
+      name: istio-ingressgateway
+      port:
+        number: 80
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: istio-ingressgateway
+            port:
+              number: 80
+        path: /*
+        pathType: ImplementationSpecific

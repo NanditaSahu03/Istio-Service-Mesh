@@ -1,0 +1,10 @@
+
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: gke-ingress-cert
+  namespace: istio-system
+spec:
+  domains:
+   - test.istio.online
+
