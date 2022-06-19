@@ -1,0 +1,38 @@
+Kind: VirtualService
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: reviews #  a name for this virtualservice
+  namespace: default
+spec:
+  hosts:
+    - reviews.default.svc.cluster.local # The Service DNS (ie the regular K8S Service) name that we're applying routing rules to.
+  http:
+    - route:
+        - destination:
+            host: reviews.default.svc.cluster.local # The Target DNS name
+            subset: v1 # The name defined in the DestinationRule
+          weight: 100 
+        - destination:
+            host: reviews.default.svc.cluster.local # The Target DNS name
+            subset: v2 # The name defined in the DestinationRule
+        - destination:
+            host: reviews.default.svc.cluster.local # The Target DNS name
+            subset: v3 # The name defined in the DestinationRule
+---
+kind: DestinationRule  # Defining which pods should be part of each subset
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: reviews  # a name for this destinationrule
+  namespace: default
+spec:
+  host: reviews.default.svc.cluster.local # Service
+  subsets:
+    - name: v1
+      labels: # SELECTOR
+        version: v1 # find pods with label "v1"
+    - name: v2
+      labels: 
+        version: v2 # find pods with label "v2"
+    - name: v3
+      labels:
+        version: v3 # find pods with label "v3"
